@@ -85,9 +85,9 @@ def header_html(title: str, subtitle: str = "") -> str:
 DARKRED, DARKRED2, TINT = "#8b1a1a", "#5e0f0f", "#f6ecec"
 FONT_STACK = "'Times New Roman', Times, 'Liberation Serif', 'Nimbus Roman', serif"
 
-CSS = """
+_CSS_TEMPLATE = """
 <style>
-:root { --red:#8b1a1a; --red2:#5e0f0f; --tint:#f6ecec; --ink:#111111; --ink2:#4d4d4d; --line:#d6d6d6; --panel:#f2f2f2; }
+/*VARS*/
 html { font-size: 17.5px; }
 .stApp, .stApp div, .stApp p, .stApp label, .stApp li, .stApp a, .stApp button, .stApp input, .stApp textarea,
 .stApp select, .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp td, .stApp th, .stApp code,
@@ -102,7 +102,7 @@ h2, h3 { border-bottom: 1px solid var(--line); padding-bottom: 4px; }
 
 /* header band */
 .lab-header { display:flex; align-items:center; gap:22px; padding:18px 24px; border-radius:6px; margin-bottom:18px;
-  background:linear-gradient(100deg, var(--red2) 0%, var(--red) 100%); border-bottom:4px solid #111; }
+  background:linear-gradient(100deg, #5e0f0f 0%, #8b1a1a 100%); border-bottom:4px solid var(--edge); }
 .lab-logo-box { background:#fff; border-radius:6px; padding:8px 12px; display:flex; align-items:center; justify-content:center;
   min-width:84px; }
 .lab-logo { height:64px; width:auto; max-width:260px; object-fit:contain; }
@@ -120,13 +120,13 @@ h2, h3 { border-bottom: 1px solid var(--line); padding-bottom: 4px; }
 .kpi-grid.c5 .k-unit { font-size:0.95rem; }
 @media (max-width: 900px) { .kpi-grid, .kpi-grid.c4, .kpi-grid.c5 { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
 .kpi { border:1px solid var(--line); border-top:5px solid var(--red); border-radius:6px; padding:12px 16px 12px 16px;
-  background:#fff; display:flex; flex-direction:column; justify-content:flex-start; min-width:0; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+  background:var(--card); display:flex; flex-direction:column; justify-content:flex-start; min-width:0; box-shadow:0 1px 2px rgba(0,0,0,.06); }
 .kpi .k-label { font-size:0.9rem; color:var(--ink2); text-transform:uppercase; letter-spacing:.05em; font-weight:700; min-height:2.5em; line-height:1.25; }
 .kpi .k-value { font-size:2.35rem; font-weight:700; color:var(--red); line-height:1.1; white-space:nowrap; margin-top:2px; }
 .kpi .k-unit { font-size:1.05rem; color:var(--ink); font-weight:600; margin-left:6px; }
-.kpi .k-desc { font-size:0.85rem; color:#5a5a5a; margin-top:8px; padding-top:6px; border-top:1px dashed var(--line); line-height:1.3; font-style:italic; }
+.kpi .k-desc { font-size:0.85rem; color:var(--ink3); margin-top:8px; padding-top:6px; border-top:1px dashed var(--line); line-height:1.3; font-style:italic; }
 .kpi .k-note { font-size:0.9rem; color:var(--ink2); margin-top:6px; line-height:1.25; }
-.kpi .k-delta-up { color:#111; font-weight:700; }
+.kpi .k-delta-up { color:var(--ink); font-weight:700; }
 .kpi .k-delta-dn { color:var(--red); font-weight:700; }
 .problem-box { border-left:5px solid var(--red); background:var(--panel); padding:12px 16px; border-radius:4px; color:var(--ink); font-size:1.05rem; }
 
@@ -141,15 +141,15 @@ h2, h3 { border-bottom: 1px solid var(--line); padding-bottom: 4px; }
 .stTabs [data-baseweb="tab-highlight"] { background-color:var(--red) !important; height:3px; }
 
 /* buttons */
-.stButton > button, .stDownloadButton > button { border-radius:4px; border:1px solid #111; color:#111; background:#fff; font-weight:700; font-size:1rem; }
+.stButton > button, .stDownloadButton > button { border-radius:4px; border:1px solid var(--ink); color:var(--ink); background:var(--card); font-weight:700; font-size:1rem; }
 .stButton > button:hover, .stDownloadButton > button:hover { border-color:var(--red); color:var(--red); background:var(--tint); }
-.stButton > button[kind="primary"], .stFormSubmitButton > button[kind="primary"] { background:var(--red); border-color:var(--red2); color:#fff; }
-.stButton > button[kind="primary"]:hover { background:var(--red2); color:#fff; }
+.stButton > button[kind="primary"], .stFormSubmitButton > button[kind="primary"] { background:var(--prim); border-color:var(--prim); color:#fff; }
+.stButton > button[kind="primary"]:hover { background:var(--prim2); color:#fff; }
 
 /* alerts: neutral gray with a dark-red edge */
-[data-testid="stAlert"] { background:#f4f4f4 !important; border:1px solid var(--line); border-left:5px solid var(--red); border-radius:4px; color:var(--ink); }
+[data-testid="stAlert"] { background:var(--panel2) !important; border:1px solid var(--line); border-left:5px solid var(--red); border-radius:4px; color:var(--ink); }
 [data-testid="stAlert"] * { color:var(--ink) !important; }
-[data-testid="stAlert"] [data-testid="stAlertContainer"], [data-testid="stAlertContainer"] { background:#f4f4f4 !important; }
+[data-testid="stAlert"] [data-testid="stAlertContainer"], [data-testid="stAlertContainer"] { background:var(--panel2) !important; }
 [data-testid="stExpander"] { border:1px solid var(--line); border-radius:6px; }
 [data-testid="stDataFrame"] { border:1px solid var(--line); border-radius:4px; }
 hr { border-color: var(--line); }
@@ -157,23 +157,43 @@ hr { border-color: var(--line); }
 
 /* plain HTML tables */
 table.lab-table { width:100%; border-collapse:collapse; font-size:0.98rem; margin:6px 0 10px 0; }
-table.lab-table th { background:var(--red2); color:#fff; text-align:left; padding:8px 10px; font-weight:700; }
+table.lab-table th { background:var(--thead); color:#fff; text-align:left; padding:8px 10px; font-weight:700; }
 table.lab-table td { padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
-table.lab-table tr:nth-child(even) td { background:#f7f7f7; }
+table.lab-table tr:nth-child(even) td { background:var(--stripe); }
 table.lab-table td:first-child { font-weight:700; color:var(--red2); white-space:nowrap; }
 table.lab-table.vals td:nth-child(2) { font-weight:700; color:var(--red); font-size:1.08rem; white-space:nowrap; text-align:right; }
 table.lab-table.vals td:nth-child(n+4) { color:var(--ink2); font-size:0.94rem; }
 table.lab-table.vals { table-layout:auto; }
-.howto { border-left:4px solid #999; background:#f7f7f7; padding:8px 14px; border-radius:3px; font-size:0.98rem; color:#222; margin:4px 0 12px 0; }
-.term-card { border:1px solid var(--line); border-left:5px solid var(--red); border-radius:5px; padding:10px 14px; margin:8px 0; background:#fff; }
+.howto { border-left:4px solid var(--ink3); background:var(--stripe); padding:8px 14px; border-radius:3px; font-size:0.98rem; color:var(--ink); margin:4px 0 12px 0; }
+.term-card { border:1px solid var(--line); border-left:5px solid var(--red); border-radius:5px; padding:10px 14px; margin:8px 0; background:var(--card); }
 .term-card .t-name { font-weight:700; color:var(--red2); font-size:1.12rem; }
-.term-card .t-short { font-weight:600; color:#111; margin:2px 0; }
-.term-card .t-long { color:#333; }
+.term-card .t-short { font-weight:600; color:var(--ink); margin:2px 0; }
+.term-card .t-long { color:var(--ink); }
 .term-card .t-formula { margin-top:4px; color:var(--red2); }
 .katex-display { font-size:1.4em; margin:0.6em 0; }
 .katex-display > .katex { color:var(--red2); }
 </style>
 """
+
+
+THEMES = {
+    "light": dict(red="#8b1a1a", red2="#5e0f0f", tint="#f6ecec", ink="#111111", ink2="#4d4d4d", ink3="#5a5a5a", line="#d6d6d6",
+                  panel="#f2f2f2", panel2="#f4f4f4", card="#ffffff", stripe="#f7f7f7", thead="#5e0f0f", edge="#111111",
+                  prim="#8b1a1a", prim2="#5e0f0f"),
+    "dark": dict(red="#ec7470", red2="#f2b0ae", tint="#2b1a1a", ink="#ececec", ink2="#c2c2c2", ink3="#a8a8a8", line="#3d3d3d",
+                 panel="#1c1c1c", panel2="#1e1e1e", card="#1b1b1b", stripe="#202020", thead="#7a1616", edge="#3a0d0d",
+                 prim="#a82a2a", prim2="#c23a3a"),
+}
+
+
+def css(mode: str = "light") -> str:
+    """Page CSS for the current Streamlit theme ('light' or 'dark')."""
+    t = THEMES.get(mode, THEMES["light"])
+    vars_ = ":root { " + " ".join(f"--{k}:{v};" for k, v in t.items()) + " }"
+    return _CSS_TEMPLATE.replace("/*VARS*/", vars_)
+
+
+CSS = css("light")
 
 
 def kpi(label: str, value: str, unit: str = "", note: str = "", delta: str = "", delta_up: bool | None = None,

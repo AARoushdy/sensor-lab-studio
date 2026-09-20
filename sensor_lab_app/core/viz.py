@@ -1,9 +1,10 @@
 """Plotly figure builders with one consistent look: dark red, black, gray and white, Times New Roman.
 
 Palette (variable names kept from the first version; the values are the current theme):
-  BLUE   = dark red #8b1a1a  - data / measured
-  ORANGE = black    #111111  - model / fit
-  AQUA   = gray     #8a8a8a  - third series
+  BLUE   = dark red (light theme) / light red (dark theme) - data / measured
+  ORANGE = black (light) / white (dark)                    - model / fit
+  AQUA   = gray                                            - third series
+Call set_theme("light" | "dark") before building figures.
 Series are also told apart by marker shape, line style and legend, so colour is never the only cue.
 """
 from __future__ import annotations
@@ -13,18 +14,41 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-BLUE, ORANGE, AQUA, YELLOW = "#8b1a1a", "#111111", "#8a8a8a", "#c99a9a"
-VIOLET, RED, GREEN = "#555555", "#c0504d", "#111111"
-INK, INK2, GRID, SURFACE = "#111111", "#3d3d3d", "#e2e2e2", "#ffffff"
-BLUE_LIGHT = "rgba(139,26,26,0.30)"
-SEQ_BLUES = ["#f7eeee", "#ead0d0", "#d9a8a8", "#c27a7a", "#a54a4a", "#8b1a1a", "#4a0d0d"]
-CAT = [BLUE, ORANGE, AQUA]
+# Colours are module globals that set_theme() re-assigns before each page run (light or dark).
+_LIGHT = dict(BLUE="#8b1a1a", ORANGE="#111111", AQUA="#8a8a8a", YELLOW="#c99a9a", VIOLET="#555555", RED="#c0504d", GREEN="#111111",
+              INK="#111111", INK2="#3d3d3d", GRID="#e2e2e2", SURFACE="#ffffff", BLUE_LIGHT="rgba(139,26,26,0.30)",
+              SEQ_BLUES=["#f7eeee", "#ead0d0", "#d9a8a8", "#c27a7a", "#a54a4a", "#8b1a1a", "#4a0d0d"],
+              TEMPLATE="plotly_white",
+              FAULT_COLORS={"normal": "#b8b8b8", "drift": "#8b1a1a", "gain loss": "#111111", "noise increase": "#7a7a7a",
+                            "spikes": "#c0504d", "stuck": "#d9a8a8", "saturation": "#444444"})
+_DARK = dict(BLUE="#ec7470", ORANGE="#f2f2f2", AQUA="#9a9a9a", YELLOW="#c99a9a", VIOLET="#bbbbbb", RED="#e08a86", GREEN="#f2f2f2",
+             INK="#ececec", INK2="#c2c2c2", GRID="#3a3a3a", SURFACE="#121212", BLUE_LIGHT="rgba(236,116,112,0.35)",
+             SEQ_BLUES=["#1f1515", "#3d1c1c", "#6b2323", "#9a3030", "#c44a47", "#e6807c", "#f8c9c6"],
+             TEMPLATE="plotly_dark",
+             FAULT_COLORS={"normal": "#8a8a8a", "drift": "#ec7470", "gain loss": "#f2f2f2", "noise increase": "#b0b0b0",
+                           "spikes": "#ff9b96", "stuck": "#d9a8a8", "saturation": "#cfcfcf"})
+
+BLUE = ORANGE = AQUA = YELLOW = VIOLET = RED = GREEN = INK = INK2 = GRID = SURFACE = BLUE_LIGHT = TEMPLATE = ""
+SEQ_BLUES: list = []
+FAULT_COLORS: dict = {}
+CAT: list = []
+
+
+def set_theme(mode: str = "light") -> None:
+    """Switch every figure builder between the light and the dark palette."""
+    g = globals()
+    for k, v in (_DARK if mode == "dark" else _LIGHT).items():
+        g[k] = v
+    g["CAT"] = [g["BLUE"], g["ORANGE"], g["AQUA"]]
+
+
+set_theme("light")
 
 
 def _layout(fig, title="", xlabel="", ylabel="", height=420, legend=True, xlog=False, ylog=False):
     fig.update_layout(
         title=dict(text=title, x=0.0, xanchor="left", font=dict(size=18, color=INK)),
-        template="plotly_white", height=height, paper_bgcolor=SURFACE, plot_bgcolor=SURFACE,
+        template=TEMPLATE, height=height, paper_bgcolor=SURFACE, plot_bgcolor=SURFACE,
         font=dict(family="Times New Roman, Times, serif", size=15, color=INK2),
         margin=dict(l=64, r=24, t=56 if title else 20, b=56),
         showlegend=legend, hovermode="closest",
@@ -141,7 +165,7 @@ def tornado_fig(el: pd.DataFrame, metric_name="sensitivity"):
                            hovertemplate="%{y}<br>elasticity = %{x:.3f}<extra></extra>"))
     fig.add_vline(x=0, line=dict(color=INK2, width=1))
     _layout(fig, f"Which parameters control the {metric_name}?  (elasticity = d ln {metric_name} / d ln parameter)",
-            "Elasticity  (blue: raises it,  orange: lowers it)", "", max(300, 34 * len(d) + 120), legend=False)
+            "Elasticity  (red bars raise it, neutral bars lower it)", "", max(300, 34 * len(d) + 120), legend=False)
     fig.update_yaxes(showgrid=False)
     fig.update_layout(bargap=0.35, margin=dict(l=260))
     return fig
@@ -197,10 +221,6 @@ def error_by_temp_fig(test: pd.DataFrame, preds: dict, x_col: str, t_col: str, s
     return _layout(fig, "Measurement error versus temperature", "Temperature (deg C)", "RMS error (% of span)", 420, ylog=True)
 
 
-FAULT_COLORS = {"normal": "#b8b8b8", "drift": "#8b1a1a", "gain loss": "#111111", "noise increase": "#7a7a7a", "spikes": "#c0504d",
-                "stuck": "#d9a8a8", "saturation": "#444444"}
-
-
 def timeline_fig(y, y_hat, true_labels, pred_labels, window, y_label):
     n = len(y)
     t = np.arange(n)
@@ -224,7 +244,7 @@ def timeline_fig(y, y_hat, true_labels, pred_labels, window, y_label):
     fig.update_yaxes(showticklabels=False, row=2, col=1, range=[-1, 1], showgrid=False, title_text="predicted")
     fig.update_yaxes(title_text=y_label, row=1, col=1)
     fig.update_xaxes(title_text="Sample", row=2, col=1)
-    fig.update_layout(template="plotly_white", height=520, paper_bgcolor=SURFACE, plot_bgcolor=SURFACE,
+    fig.update_layout(template=TEMPLATE, height=520, paper_bgcolor=SURFACE, plot_bgcolor=SURFACE,
                       font=dict(size=15, color=INK2), margin=dict(l=64, r=24, t=50, b=110),
                       legend=dict(orientation="h", yanchor="top", y=-0.16, xanchor="left", x=0),
                       title=dict(text="Fault detection on a simulated signal (shaded = true fault, bar = predicted class)",

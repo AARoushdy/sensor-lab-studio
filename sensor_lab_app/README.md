@@ -42,6 +42,7 @@ Double-click `run_windows.bat` (Windows) or `run_mac_linux.command` (macOS / Lin
 * **Glossary page**: 169 terms in plain language, searchable, with formulas.
 * **Every input** has a small **?** with an explanation; every result card has a one-line meaning under the number.
 * Each tab has a **Key terms** box, and tables have a **What it means** column.
+* **Light and dark mode**: the app follows the computer's setting automatically; change it in the top-right menu (⋮ > Settings > Theme).
 * **Student mode** (left sidebar) shows or hides the "How to read this" notes under charts.
 
 ## Run it on your own computer (developers)

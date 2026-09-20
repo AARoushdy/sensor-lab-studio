@@ -15,7 +15,7 @@ PLOT_CFG = {"displaylogo": False, "toImageButtonOptions": {"format": "png", "sca
 
 
 def show(fig):
-    st.plotly_chart(fig, width="stretch", config=PLOT_CFG)
+    st.plotly_chart(fig, width="stretch", config=PLOT_CFG, theme=None)
 
 
 st.markdown(branding.header_html("ML Studio", "Simulate with new parameters, collect the data, then learn from it: "

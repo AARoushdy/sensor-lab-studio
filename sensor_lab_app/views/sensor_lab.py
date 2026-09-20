@@ -17,7 +17,7 @@ PLOT_CFG = {"displaylogo": False, "toImageButtonOptions": {"format": "png", "sca
 
 
 def show(fig):
-    st.plotly_chart(fig, width="stretch", config=PLOT_CFG)
+    st.plotly_chart(fig, width="stretch", config=PLOT_CFG, theme=None)
 
 
 st.markdown(branding.header_html("Sensor Lab", "Choose a transducer, change its parameters and watch the sensitivity, "
@@ -405,8 +405,9 @@ with tab_phys:
                                  hovertemplate="T = %{x:.0f} °C<br>ΔS/S = %{y:.4g} %<extra></extra>"), row=1, col=1)
     fig.add_trace(viz.go.Scatter(x=Ts, y=off_T - off25, mode="lines", name="offset shift", line=dict(color=viz.ORANGE, width=2.2),
                                  hovertemplate="T = %{x:.0f} °C<br>Δoffset = %{y:.4g}<extra></extra>"), row=1, col=2)
-    fig.update_layout(template="plotly_white", height=340, showlegend=False, margin=dict(l=60, r=20, t=50, b=50),
-                      font=dict(size=13, color=viz.INK2))
+    fig.update_layout(template=viz.TEMPLATE, height=340, showlegend=False, margin=dict(l=60, r=20, t=50, b=50),
+                      paper_bgcolor=viz.SURFACE, plot_bgcolor=viz.SURFACE,
+                      font=dict(family="Times New Roman, Times, serif", size=13, color=viz.INK2))
     fig.update_xaxes(title_text="Temperature (°C)", gridcolor=viz.GRID)
     fig.update_yaxes(gridcolor=viz.GRID)
     show(fig)

@@ -4,7 +4,7 @@ Run with:   streamlit run app.py
 """
 import streamlit as st
 
-from core import branding, help_ui
+from core import branding, help_ui, viz
 
 st.set_page_config(page_title="Sensor Lab Studio", page_icon=str(branding.ASSETS / "logo_placeholder.png"),
                    layout="wide", initial_sidebar_state="expanded")
@@ -14,7 +14,12 @@ try:
 except Exception:                                    # unsupported logo format -> fall back to placeholder
     st.logo(str(branding.ASSETS / "logo_placeholder.png"), size="large")
 
-st.markdown(branding.CSS, unsafe_allow_html=True)
+try:
+    THEME = st.context.theme.type or "light"          # follows the user's system / Streamlit menu setting
+except Exception:                                      # noqa: BLE001
+    THEME = "light"
+viz.set_theme(THEME)
+st.markdown(branding.css(THEME), unsafe_allow_html=True)
 
 pages = [
     st.Page("views/home.py", title="Home", icon=":material/home:", default=True),
@@ -23,6 +28,8 @@ pages = [
     st.Page("views/theory.py", title="Theory", icon=":material/menu_book:"),
     st.Page("views/glossary.py", title="Glossary", icon=":material/help:"),
 ]
+APP_VERSION = "2026-09-21 dark-mode"
 nav = st.navigation(pages)
 help_ui.sidebar_toggle()
+st.sidebar.caption(f"Version {APP_VERSION} · {THEME} theme")
 nav.run()
