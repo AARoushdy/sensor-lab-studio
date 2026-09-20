@@ -22,7 +22,7 @@ _LIGHT = dict(BLUE="#8b1a1a", ORANGE="#111111", AQUA="#8a8a8a", YELLOW="#c99a9a"
               FAULT_COLORS={"normal": "#b8b8b8", "drift": "#8b1a1a", "gain loss": "#111111", "noise increase": "#7a7a7a",
                             "spikes": "#c0504d", "stuck": "#d9a8a8", "saturation": "#444444"})
 _DARK = dict(BLUE="#ec7470", ORANGE="#f2f2f2", AQUA="#9a9a9a", YELLOW="#c99a9a", VIOLET="#bbbbbb", RED="#e08a86", GREEN="#f2f2f2",
-             INK="#ececec", INK2="#c2c2c2", GRID="#3a3a3a", SURFACE="#121212", BLUE_LIGHT="rgba(236,116,112,0.35)",
+             INK="#ececec", INK2="#c2c2c2", GRID="#3a3a3a", SURFACE="#0c0c0c", BLUE_LIGHT="rgba(236,116,112,0.35)",
              SEQ_BLUES=["#1f1515", "#3d1c1c", "#6b2323", "#9a3030", "#c44a47", "#e6807c", "#f8c9c6"],
              TEMPLATE="plotly_dark",
              FAULT_COLORS={"normal": "#8a8a8a", "drift": "#ec7470", "gain loss": "#f2f2f2", "noise increase": "#b0b0b0",

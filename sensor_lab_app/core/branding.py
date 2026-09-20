@@ -195,6 +195,15 @@ def css(mode: str = "light") -> str:
 
 CSS = css("light")
 
+# Used when the viewer picks the opposite of the theme Streamlit is showing: the whole page is colour-inverted
+# (this also flips native widgets, tables and charts), then the header band and images are inverted back.
+INVERT_CSS = """
+<style>
+html { filter: invert(1) hue-rotate(180deg); }
+.lab-header, [data-testid="stImage"] img, .stApp video { filter: hue-rotate(-180deg) invert(1); }
+</style>
+"""
+
 
 def kpi(label: str, value: str, unit: str = "", note: str = "", delta: str = "", delta_up: bool | None = None,
         desc: str | None = None) -> str:
